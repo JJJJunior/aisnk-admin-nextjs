@@ -13,24 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ImageFile {
-  id               String    @id @default(uuid())
-  name             String
-  size             Int
-  type             String
-  savedUrl         SavedUrl?
-  lastModified     BigInt
-  lastModifiedDate DateTime
-}
-
-model SavedUrl {
-  id           String    @id @default(uuid())
-  imageSaveUrl String
-  imageUrl     String
-  ImageFile    ImageFile @relation(fields: [imageFileId], references: [id])
-  imageFileId  String    @unique
-}
-
 model ProductsOnOder {
   product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId      String
@@ -124,7 +106,7 @@ model Collection {
   id          String                  @id @default(uuid())
   title       String                  @unique
   description String?                 @db.Text
-  image       String
+  images      String                  @db.Text
   createdAt   DateTime                @default(now())
   updatedAt   DateTime                @default(now())
   products    ProductsOnCollections[]
@@ -135,7 +117,7 @@ model Product {
   id          String                  @id @default(uuid())
   title       String
   description String                  @db.Text
-  media       String                  @db.Text
+  images      String                  @db.Text
   category    String?
   tags        String?
   sizes       String?

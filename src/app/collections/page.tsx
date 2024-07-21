@@ -1,14 +1,52 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, cache } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import DataTable from "@/components/collections/DataTable";
+import { Button } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import { CollectionType } from "@/lib/types";
+import axios from "axios";
+
 const Collections = () => {
   const { userId } = useAuth();
   const router = useRouter();
+  const [collections, setCollections] = useState<CollectionType[]>([]);
   if (!userId) {
     router.push("/sign-in");
   }
-  return <div>Collections</div>;
+
+  const fetchCollections = async () => {
+    try {
+      const res = await axios.get("/api/collections");
+      res.status === 200 && setCollections(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
+  console.log(collections);
+
+  return (
+    <div>
+      <div>
+        <Button type="primary">
+          <Link href="/collections/new">
+            添加栏目
+            <PlusCircleOutlined className="ml-2" />
+          </Link>
+        </Button>
+      </div>
+      <div>
+        <DataTable dataSource={collections} />
+      </div>
+    </div>
+  );
 };
 
 export default Collections;

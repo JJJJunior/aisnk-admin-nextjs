@@ -58,7 +58,7 @@ export type ProductType = {
   id: string;
   title: string;
   description: string;
-  media: string;
+  images: string;
   category: string;
   collections: string;
   tags: string;

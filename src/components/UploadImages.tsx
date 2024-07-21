@@ -29,7 +29,7 @@ const UploadImages: React.FC<UploadImagesProps> = ({ setImages }) => {
       .post(process.env.NEXT_PUBLIC_AVA_IMAGE_SERVER!, fmData, config)
       .then((res) => {
         onSuccess(file);
-        console.log(res);
+        // console.log(res);
         //将上传图片服务器返回的url传递给控件
         setImages((prevState) => {
           return [...prevState, res.data.data.image_url];

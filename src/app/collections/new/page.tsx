@@ -1,9 +1,9 @@
-import React from 'react';
-
+import React from "react";
+import CollectionForm from "@/components/collections/CollectionForm";
 const NewCollection = () => {
   return (
     <div>
-      NewCollection
+      <CollectionForm />
     </div>
   );
 };

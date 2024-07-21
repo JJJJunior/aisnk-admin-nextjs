@@ -1,46 +1,18 @@
 import React, { useRef, useState } from "react";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import { Button, Input, InputRef, Popconfirm, Space, Table, TableColumnsType, TableColumnType } from "antd";
+import { Button, Input, InputRef, Popconfirm, Row, Space, Table, TableColumnsType, TableColumnType } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
+import { CollectionType } from "@/lib/types";
+import Link from "next/link";
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
+type DataIndex = keyof CollectionType;
+
+interface DataTableProps {
+  dataSource: CollectionType[];
 }
 
-type DataIndex = keyof DataType;
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-];
-
-const DataTable: React.FC = () => {
+const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -52,15 +24,14 @@ const DataTable: React.FC = () => {
   };
 
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
+    console.log(key);
   };
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
   };
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<CollectionType> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
@@ -130,42 +101,46 @@ const DataTable: React.FC = () => {
         text
       ),
   });
-  const columns: TableColumnsType<DataType> = [
+  const columns: TableColumnsType<CollectionType> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: "栏目名称",
+      dataIndex: "title",
+      key: "title",
+      ...getColumnSearchProps("title"),
+      render: (_, record) => <Link href={`/collections/${record.id}`}>{record.title}</Link>,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      ...getColumnSearchProps("age"),
+      title: "栏目描述",
+      dataIndex: "description",
+      key: "description",
+      ...getColumnSearchProps("description"),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
-      sorter: (a, b) => a.address.length - b.address.length,
+      title: "产品数量",
+      dataIndex: "products",
+      key: "products",
+      sorter: (a) => a.products.length,
       sortDirections: ["descend", "ascend"],
+      render: (products) => products.length,
     },
     {
       title: "operation",
       dataIndex: "operation",
+      key: "operation",
       render: (_, record) =>
-        data.length >= 1 ? (
-          <div className="flex flex items-center justify-end  gap-2">
-            <Button>编辑</Button>
-            <Popconfirm title="确定删除?" onConfirm={() => handleDelete(record.key)}>
+        dataSource.length >= 1 ? (
+          <div className="flex items-center justify-end gap-2">
+            <Button>
+              <Link href={`/collections/${record.id}`}>编辑</Link>
+            </Button>
+            <Popconfirm title="确定删除?" onConfirm={() => handleDelete(record.id)}>
               <Button>删除</Button>
             </Popconfirm>
           </div>
         ) : null,
     },
   ];
-  return <Table columns={columns} dataSource={data} />;
+  return <Table columns={columns} dataSource={dataSource} rowKey={"id"} />;
 };
 
 export default DataTable;

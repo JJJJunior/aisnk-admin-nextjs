@@ -1,18 +1,16 @@
-"use client"
-import React from 'react';
-import {useAuth} from "@clerk/nextjs";
+"use client";
+import React from "react";
+import { useAuth } from "@clerk/nextjs";
 import NoAuth from "@/components/NoAuth";
-import {Button} from "antd";
-import {PlusCircleOutlined} from "@ant-design/icons";
+import { Button } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import DataTable from "@/components/DataTable";
+import DataTable from "@/components/collections/DataTable";
 
 const Products = () => {
-  const {userId} = useAuth()
+  const { userId } = useAuth();
   if (!userId) {
-    return (
-      <NoAuth/>
-    )
+    return <NoAuth />;
   }
 
   return (
@@ -20,12 +18,13 @@ const Products = () => {
       <div>
         <Button type="primary">
           <Link href="/products/new">
-            添加产品<PlusCircleOutlined/>
+            添加产品
+            <PlusCircleOutlined />
           </Link>
         </Button>
       </div>
       <div>
-        <DataTable/>
+        <DataTable />
       </div>
     </div>
   );

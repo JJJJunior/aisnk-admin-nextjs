@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "@/prisma/index";
+import prisma from "../../../../prisma";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse("Unauthorized!", { status: 403 });
     }
 
-    const { title, description, image } = await req.json();
+    const { title, description, images } = await req.json();
 
     const existingCollection = await prisma.collection.findFirst({
       where: {
@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse("Collection already exists", { status: 400 });
     }
 
-    if (!title || !image) {
+    if (!title || !images) {
       return new NextResponse("Title and image are required!", { status: 400 });
     }
 
@@ -29,7 +29,7 @@ export const POST = async (req: NextRequest) => {
       data: {
         title,
         description,
-        image,
+        images: images.length > 1 ? images.join(",") : images[0],
       },
     });
     return NextResponse.json(newCollection, { status: 200 });
