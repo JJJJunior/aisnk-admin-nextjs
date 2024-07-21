@@ -8,7 +8,6 @@ export const POST = async (req: NextRequest) => {
     if (!userId) {
       return new NextResponse("Unauthorized", {status: 401});
     }
-
     const {
       title,
       description,

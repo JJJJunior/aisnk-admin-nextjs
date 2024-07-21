@@ -12,3 +12,150 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model ImageFile {
+  id               String    @id @default(uuid())
+  name             String
+  size             Int
+  type             String
+  savedUrl         SavedUrl?
+  lastModified     BigInt
+  lastModifiedDate DateTime
+}
+
+model SavedUrl {
+  id           String    @id @default(uuid())
+  imageSaveUrl String
+  imageUrl     String
+  ImageFile    ImageFile @relation(fields: [imageFileId], references: [id])
+  imageFileId  String    @unique
+}
+
+model ProductsOnOder {
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId      String
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String
+  title          String?
+  color          String?
+  size           String?
+  currency       String?
+  amountDiscount Int?
+  amountSubtotal Int?
+  amountTax      Int?
+  amountTotal    Int?
+  quantity       Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+
+  @@id([productId, orderId])
+}
+
+model ShippingAddress {
+  id           String  @id @default(uuid())
+  streetNumber String?
+  streetName   String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?
+  order        Order   @relation(fields: [orderId], references: [id])
+  orderId      String  @unique
+}
+
+model Order {
+  id              String           @id @default(uuid())
+  customerClerkId String?
+  products        ProductsOnOder[]
+  shippingAddress ShippingAddress?
+  shippingRate    String? // stripe上运费模板
+  totalAmount     Int?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now())
+  customer        Customer?        @relation(fields: [customerId], references: [id])
+  customerId      String?
+  status          String?
+}
+
+model Customer {
+  id        String   @id @unique
+  name      String?
+  email     String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Session {
+  id             String  @id @default(uuid())
+  user_id        String?
+  abandon_at     BigInt?
+  client_id      String?
+  created_at     BigInt?
+  expires_at     BigInt?
+  last_active_at BigInt?
+  object         String?
+  status         String?
+  updated_at     BigInt?
+}
+
+model User {
+  id                String         @id @default(uuid())
+  email_address     EmailAddress[]
+  first_name        String?
+  last_name         String?
+  last_sign_in_at   BigInt?
+  profile_image_url String?
+  image_url         String?
+  object            String?
+  created_at        BigInt?
+  updated_at        BigInt?
+}
+
+model EmailAddress {
+  id            String  @id @default(uuid())
+  email_address String?
+  object        String?
+  user          User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String?
+}
+
+model Collection {
+  id          String                  @id @default(uuid())
+  title       String                  @unique
+  description String?                 @db.Text
+  image       String
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @default(now())
+  products    ProductsOnCollections[]
+  status      String?
+}
+
+model Product {
+  id          String                  @id @default(uuid())
+  title       String
+  description String                  @db.Text
+  media       String                  @db.Text
+  category    String?
+  tags        String?
+  sizes       String?
+  colors      String?
+  price       Float
+  expense     Float
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @default(now())
+  collections ProductsOnCollections[]
+  orders      ProductsOnOder[]
+  status      String?
+}
+
+model ProductsOnCollections {
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId    String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+
+  @@id([productId, collectionId])
+}
