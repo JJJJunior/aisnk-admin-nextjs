@@ -61,6 +61,7 @@ export type ProductType = {
   images: string;
   category: string;
   collections: string;
+  status: string;
   tags: string;
   sizes: string;
   colors: string;

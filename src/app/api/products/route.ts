@@ -1,36 +1,25 @@
-import {NextRequest, NextResponse} from "next/server";
-import {auth} from "@clerk/nextjs/server";
-import prisma from "@/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import prisma from "../../../../prisma";
 
 export const POST = async (req: NextRequest) => {
   try {
-    const {userId} = auth();
+    const { userId } = auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", {status: 401});
+      return new NextResponse("Unauthorized", { status: 401 });
     }
-    const {
-      title,
-      description,
-      media,
-      category,
-      collections,
-      tags,
-      status,
-      sizes,
-      colors,
-      price,
-      expense
-    } = await req.json();
+    const { title, description, images, category, collections, stock, tags, status, sizes, colors, price, expense } =
+      await req.json();
 
-    if (!title || !description || !media || !category || !price || !expense) {
-      return new NextResponse("Not enough data to create a product!", {status: 400});
+    if (!title || !description || !images || !category || !price) {
+      return new NextResponse("Not enough data to create a product!", { status: 400 });
     }
 
     const newProduct = await prisma.product.create({
       data: {
         title,
         description,
-        media,
+        images: images.length > 1 ? images.join(",") : images[0],
         category,
         collections: {
           create: collections.map((collectionId: string) => ({
@@ -41,18 +30,19 @@ export const POST = async (req: NextRequest) => {
             },
           })),
         },
-        tags,
+        tags: tags.length > 1 ? tags.join(",") : tags[0],
         status,
-        sizes,
-        colors,
+        stock,
+        sizes: sizes.length > 1 ? sizes.join(",") : sizes[0],
+        colors: colors.length > 1 ? colors.join(",") : colors[0],
         price,
         expense,
       },
     });
-    return NextResponse.json(newProduct, {status: 200});
+    return NextResponse.json(newProduct, { status: 200 });
   } catch (err) {
     console.log("[products_POST]", err);
-    return new NextResponse("Internal Error", {status: 500});
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };
 
@@ -74,10 +64,10 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
         },
       },
     });
-    console.log(products)
-    return NextResponse.json(products, {status: 200});
+    console.log(products);
+    return NextResponse.json(products, { status: 200 });
   } catch (err) {
     console.log(err);
-    return new NextResponse("Internal Server Error", {status: 500});
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 };

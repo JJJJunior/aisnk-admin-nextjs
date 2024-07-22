@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Spin, message } from "antd";
 import UploadImages from "@/components/UploadImages";
 import Image from "next/image";
@@ -13,6 +13,7 @@ const CollectionForm: React.FC = () => {
   const [form] = Form.useForm();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const onFinish = async (values: any) => {

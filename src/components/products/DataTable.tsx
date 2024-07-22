@@ -3,13 +3,14 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import { Button, Input, InputRef, Popconfirm, Row, Space, Table, TableColumnsType, TableColumnType } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import { CollectionType } from "@/lib/types";
+import { ProductType } from "@/lib/types";
 import Link from "next/link";
+import Image from "next/image";
 
-type DataIndex = keyof CollectionType;
+type DataIndex = keyof ProductType;
 
 interface DataTableProps {
-  dataSource: CollectionType[];
+  dataSource: ProductType[];
 }
 
 const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
@@ -101,28 +102,66 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
         text
       ),
   });
-  const columns: TableColumnsType<CollectionType> = [
+  const columns: TableColumnsType<ProductType> = [
     {
-      title: "栏目名称",
+      title: "产品名称",
       dataIndex: "title",
       key: "title",
       ...getColumnSearchProps("title"),
-      render: (_, record) => <Link href={`/collections/${record.id}`}>{record.title}</Link>,
+      render: (_, record) => <Link href={`/products/${record.id}`}>{record.title}</Link>,
     },
     {
-      title: "栏目描述",
-      dataIndex: "description",
-      key: "description",
-      ...getColumnSearchProps("description"),
-      render: (text) => <p className="ellipsis-1-lines max-w-[800px]">{text}</p>,
+      title: "产品图片",
+      dataIndex: "images",
+      key: "images",
+      render: (images) => (
+        <div>
+          <Image width={50} height={50} alt="image" src={images?.split(",")[0]} className="rounded-lg" />
+        </div>
+      ),
     },
     {
-      title: "产品数量",
-      dataIndex: "products",
-      key: "products",
-      sorter: (a) => a.products.length,
-      sortDirections: ["descend", "ascend"],
-      render: (products) => products.length,
+      title: "产品分类",
+      dataIndex: "category",
+      key: "category",
+      ...getColumnSearchProps("category"),
+    },
+    {
+      title: "价格 ($)",
+      dataIndex: "price",
+      key: "price",
+      ...getColumnSearchProps("price"),
+    },
+    {
+      title: "费用 ($)",
+      dataIndex: "expense",
+      key: "expense",
+      ...getColumnSearchProps("expense"),
+      render: (expense) => (expense ? expense : "N/A"),
+    },
+    {
+      title: "库存",
+      dataIndex: "stock",
+      key: "stock",
+      ...getColumnSearchProps("stock"),
+    },
+    {
+      title: "状态",
+      dataIndex: "status",
+      key: "status",
+      ...getColumnSearchProps("status"),
+      render: (status) => {
+        switch (status) {
+          case "published":
+            return <span className="text-green-500">上线</span>;
+          case "draft":
+            return <span className="text-red-500">草稿</span>;
+          case "archived":
+            return <span className="text-blue-500">归档</span>;
+          default:
+            return <span>{status}</span>;
+        }
+      },
     },
     {
       title: "操作",
@@ -132,7 +171,7 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
         dataSource.length >= 1 ? (
           <div className="flex items-center gap-2">
             <Button>
-              <Link href={`/collections/${record.id}`}>编辑</Link>
+              <Link href={`/products/${record.id}`}>编辑</Link>
             </Button>
             <Popconfirm title="确定删除?" onConfirm={() => handleDelete(record.id)}>
               <Button>删除</Button>

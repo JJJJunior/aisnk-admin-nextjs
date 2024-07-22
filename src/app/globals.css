@@ -2,14 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-    padding: 0;
-    margin: 0;
-    background: #fff;
-    height: 100%;
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #fff;
+  height: 100%;
 }
 
 #root {
-    padding: 24px;
-    height: 100%;
+  padding: 24px;
+  height: 100%;
+}
+
+/* 在你的全局样式文件中，例如 globals.css */
+.ellipsis-1-lines {
+  @apply overflow-hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* 这里的3代表显示的行数，可以根据需要调整 */
 }

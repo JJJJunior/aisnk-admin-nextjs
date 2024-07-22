@@ -42,7 +42,9 @@ const UploadImages: React.FC<UploadImagesProps> = ({ setImages }) => {
   };
   return (
     <Upload multiple maxCount={6} customRequest={uploadImage}>
-      <Button icon={<UploadOutlined />}>点击上传最多6张</Button>
+      <Button onClick={(evt) => evt.preventDefault()} icon={<UploadOutlined />}>
+        点击上传最多6张
+      </Button>
     </Upload>
   );
 };
