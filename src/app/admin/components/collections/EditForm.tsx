@@ -62,7 +62,7 @@ const EditForm = ({ collectionData }: { collectionData: any }) => {
     setImages((prevState) => prevState.filter((url) => url !== item));
   };
 
-  console.log(images);
+  // console.log(images);
   return (
     <div>
       <Form form={form} onFinish={onFinish} layout="vertical" initialValues={initialData}>
