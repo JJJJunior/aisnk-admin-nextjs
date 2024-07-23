@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { Button, ConfigProvider } from "antd";
-import Navbar from "@/app/admin/components/Navbar";
 import React from "react";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import Link from "next/link";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider>
+          test
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );
