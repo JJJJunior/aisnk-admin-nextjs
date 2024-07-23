@@ -3,6 +3,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import { ClerkProvider } from "@clerk/nextjs";
+import Notification from "./(store)/components/Notification";
+import Footer from "./(store)/components/Footer";
+import Header from "./(store)/components/Header";
+import Topbar from "./(store)/components/Topbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClerkProvider>
-          test
-          {children}
-        </ClerkProvider>
+        <div className="h-screen">
+          <ClerkProvider>
+            <Notification />
+            <Header />
+            <Topbar />
+            <div className="bg-grey-1 h-full">{children}</div>
+            <Footer />
+          </ClerkProvider>
+        </div>
       </body>
     </html>
   );
