@@ -10,7 +10,7 @@ const EditorPage = ({ params }: { params: { productId: string } }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [productDetails, setProductDetails] = useState<ProductType | null>(null);
 
-  console.log(productDetails);
+  // console.log(productDetails);
 
   const getProductDetails = async () => {
     setLoading(true);
@@ -30,7 +30,7 @@ const EditorPage = ({ params }: { params: { productId: string } }) => {
     getProductDetails();
   }, []);
 
-  return loading ? <Loader /> : <EditForm initialData={productDetails} />;
+  return loading ? <Loader /> : <EditForm productData={productDetails} />;
 };
 
 export default EditorPage;

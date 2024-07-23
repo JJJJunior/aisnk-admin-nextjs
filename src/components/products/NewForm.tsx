@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
-import TagForm from "@/components/TagForm";
 import UploadImages from "@/components/UploadImages";
 import Image from "next/image";
 import { CloseSquareOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -13,11 +12,11 @@ import Link from "next/link";
 
 const NewForm: React.FC = () => {
   const [form] = Form.useForm();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<string[]>([]);
   const [collections, setCollections] = useState<CollectionType[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [colors, setColors] = useState("");
+  const [sizes, setSizes] = useState("");
+  const [tags, setTags] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -39,9 +38,9 @@ const NewForm: React.FC = () => {
     const newProduct: ProductType = {
       ...values,
       images: images,
-      colors: colors,
-      sizes: sizes,
-      tags: tags,
+      colors: replaceSymbols(values.colors),
+      sizes: replaceSymbols(values.sizes),
+      tags: replaceSymbolsInTags(values.tags),
     };
     // console.log("Received values of form: ", newProduct);
     setLoading(true);
@@ -62,14 +61,41 @@ const NewForm: React.FC = () => {
   const cleanAll = () => {
     form.resetFields();
     setCollections([]);
-    setColors([]);
     setImages([]);
-    setSizes([]);
-    setTags([]);
   };
   const handRemoveImageBtn = (evt: React.MouseEvent<HTMLButtonElement>, item: string) => {
     evt.preventDefault();
     setImages((prevState) => prevState.filter((url) => url !== item));
+  };
+
+  const replaceSymbols = (input: string): string => {
+    // 定义要替换的符号和目标符号
+    const symbolsToReplace = /[， ；、‧]/g;
+    const replacementSymbol = ",";
+
+    // 检查字符串是否包含要替换的符号
+    if (symbolsToReplace.test(input)) {
+      // 使用正则表达式替换所有符合条件的符号
+      return input.replace(symbolsToReplace, replacementSymbol);
+    }
+
+    // 如果没有符号要替换，直接返回原字符串
+    return input;
+  };
+
+  const replaceSymbolsInTags = (input: string): string => {
+    // 定义要替换的符号和目标符号
+    const symbolsToReplace = /[，、]/g;
+    const replacementSymbol = ",";
+
+    // 检查字符串是否包含要替换的符号
+    if (symbolsToReplace.test(input)) {
+      // 使用正则表达式替换所有符合条件的符号
+      return input.replace(symbolsToReplace, replacementSymbol);
+    }
+
+    // 如果没有符号要替换，直接返回原字符串
+    return input;
   };
 
   return (
@@ -154,14 +180,14 @@ const NewForm: React.FC = () => {
           <Form.Item label="分类名称" name="category" rules={[{ required: true, message: "分类名称不能为空" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="颜色">
-            <TagForm setTags={setColors} tags={colors} />
+          <Form.Item label="颜色" name="colors">
+            <Input placeholder="比如：red、yellow、blue 仅支持逗号、顿号、空格进行分隔" />
           </Form.Item>
-          <Form.Item label="尺寸">
-            <TagForm setTags={setSizes} tags={sizes} />
+          <Form.Item label="尺寸" name="sizes">
+            <Input placeholder="比如：36 37 41 42 仅支持逗号、顿号、空格进行分隔" />
           </Form.Item>
-          <Form.Item label="标签">
-            <TagForm setTags={setTags} tags={tags} />
+          <Form.Item label="标签" name="tags">
+            <Input placeholder="比如：shoes，hot，summer 只支持逗号、顿号进行分隔" />
           </Form.Item>
         </div>
         <Form.Item>

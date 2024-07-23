@@ -5,7 +5,7 @@ import { md5WithSalt } from "@/lib/md5";
 import axios from "axios";
 
 interface UploadImagesProps {
-  setImages: (value: ((prevState: any[]) => any[]) | any[]) => void;
+  setImages: (value: ((prevState: string[]) => string[]) | string[]) => void;
 }
 
 const UploadImages: React.FC<UploadImagesProps> = ({ setImages }) => {

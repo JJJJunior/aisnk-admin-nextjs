@@ -1,4 +1,4 @@
-type OrderType = {
+export type OrderType = {
   id: string;
   customerClerkId: string;
   shippingRate: string;
@@ -11,7 +11,7 @@ type OrderType = {
   products: ProductTypeInOrder[];
 };
 
-type ProductTypeInOrder = {
+export type ProductTypeInOrder = {
   productId: string;
   orderId: string;
   title: string;
@@ -27,7 +27,7 @@ type ProductTypeInOrder = {
   updatedAt: Date;
 };
 
-type CustomerType = {
+export type CustomerType = {
   id: string;
   name: string;
   email: string;
@@ -35,7 +35,7 @@ type CustomerType = {
   updatedAt: Date;
 };
 
-type ShippingAddressType = {
+export type ShippingAddressType = {
   id: string;
   streetNumber: string;
   streetName: string;
@@ -46,7 +46,7 @@ type ShippingAddressType = {
   orderId: string;
 };
 
-type CollectionType = {
+export type CollectionType = {
   id: string;
   title: string;
   description: string;
@@ -58,17 +58,14 @@ export type ProductType = {
   id: string;
   title: string;
   description: string;
-  images: string;
+  images: string[];
   category: string;
-  collections: string;
+  collections: string[];
   status: string;
-  tags: string;
-  sizes: string;
-  colors: string;
+  tags: string[];
+  sizes: string[];
+  stock: number;
+  colors: string[];
   price: number;
-  productId?: string;
-  orderId?: string;
   expense: number;
-  createdAt: Date;
-  updatedAt: Date;
 };

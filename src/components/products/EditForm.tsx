@@ -1,32 +1,38 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
-import TagForm from "@/components/TagForm";
 import UploadImages from "@/components/UploadImages";
 import Image from "next/image";
 import { CloseSquareOutlined, LoadingOutlined } from "@ant-design/icons";
 import { ProductType, CollectionType } from "@/lib/types";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import { message } from "antd";
 import Link from "next/link";
 
-interface EditFormProps {
-  initialData?: ProductType | null;
-}
-
-const EditForm: React.FC<EditFormProps> = ({ initialData }) => {
+const EditForm = ({ productData }: { productData: any }) => {
   const [form] = Form.useForm();
-  const [images, setImages] = useState([]);
   const [collections, setCollections] = useState<CollectionType[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  //初始化数据
-  form.setFieldsValue(initialData);
+  //初始化数据 initialData 数据是给form提供默认呈现的
+  // 三个颜色、尺寸、标签三个状态单独管理，这里有做数据初始化。数据库存储是string逗号隔开
+  // 图片状态单独管理，图片只保存上传成功的url
+  // console.log(productData);
+  const initialData: ProductType = {
+    id: productData?.id || "",
+    title: productData?.title || "",
+    price: productData?.price || 0,
+    stock: productData?.stock || 0,
+    description: productData?.description || "",
+    images: productData ? productData.images?.split(",") : [],
+    category: productData?.category || "",
+    expense: productData?.expense || 0,
+    status: productData?.status || "",
+    colors: productData?.colors,
+    sizes: productData?.sizes,
+    tags: productData?.tags,
+    collections: productData?.collections.map((collection: any) => collection.collectionId) || [],
+  };
 
   const fetchCollections = async () => {
     try {
@@ -45,43 +51,65 @@ const EditForm: React.FC<EditFormProps> = ({ initialData }) => {
     // console.log(values);
     const newProduct: ProductType = {
       ...values,
-      images: images,
-      colors: colors,
-      sizes: sizes,
-      tags: tags,
+      colors: replaceSymbols(values.colors),
+      sizes: replaceSymbols(values.sizes),
+      tags: replaceSymbolsInTags(values.tags),
     };
-    // console.log("Received values of form: ", newProduct);
-    setLoading(true);
-    try {
-      const res = await axios.post("/api/products", newProduct);
-      if (res.status === 200) {
-        message.success("修改产品成功");
-        router.push("/products");
-      }
-    } catch (err) {
-      console.error(err);
-      message.error("修改产品失败");
-    } finally {
-      cleanAll();
-      setLoading(false);
-    }
+    console.log("Received values of form: ", newProduct);
+    // setLoading(true);
+    // try {
+    //   const res = await axios.post("/api/products", newProduct);
+    //   if (res.status === 200) {
+    //     message.success("修改产品成功");
+    //     router.push("/products");
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    //   message.error("修改产品失败");
+    // } finally {
+    //   cleanAll();
+    //   setLoading(false);
+    // }
   };
   const cleanAll = () => {
     form.resetFields();
     setCollections([]);
-    setColors([]);
-    setImages([]);
-    setSizes([]);
-    setTags([]);
   };
   const handRemoveImageBtn = (evt: React.MouseEvent<HTMLButtonElement>, item: string) => {
     evt.preventDefault();
-    setImages((prevState) => prevState.filter((url) => url !== item));
+    setImages((prevState) => prevState?.filter((url) => url !== item));
   };
+  const replaceSymbols = (input: string): string => {
+    // 定义要替换的符号和目标符号
+    const symbolsToReplace = /[， ；、‧]/g;
+    const replacementSymbol = ",";
 
+    // 检查字符串是否包含要替换的符号
+    if (symbolsToReplace.test(input)) {
+      // 使用正则表达式替换所有符合条件的符号
+      return input.replace(symbolsToReplace, replacementSymbol);
+    }
+
+    // 如果没有符号要替换，直接返回原字符串
+    return input;
+  };
+  const replaceSymbolsInTags = (input: string): string => {
+    // 定义要替换的符号和目标符号
+    const symbolsToReplace = /[，、]/g;
+    const replacementSymbol = ",";
+
+    // 检查字符串是否包含要替换的符号
+    if (symbolsToReplace.test(input)) {
+      // 使用正则表达式替换所有符合条件的符号
+      return input.replace(symbolsToReplace, replacementSymbol);
+    }
+
+    // 如果没有符号要替换，直接返回原字符串
+    return input;
+  };
   return (
     <div>
-      <Form form={form} onFinish={onFinish} layout="vertical">
+      <Form form={form} onFinish={onFinish} layout="vertical" initialValues={initialData}>
         <div>
           <Form.Item label="产品名称" name="title" rules={[{ required: true, message: "产品名称不能为空" }]}>
             <Input />
@@ -118,7 +146,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialData }) => {
           rules={[
             {
               validator: () => {
-                if (!images || images.length === 0) {
+                if (!initialData.images || initialData.images.length === 0) {
                   return Promise.reject(new Error("请至少上传一张图片"));
                 }
                 return Promise.resolve();
@@ -131,7 +159,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialData }) => {
         <div className="flex flex-wrap gap-4">
           {initialData?.images &&
             initialData.images.length > 0 &&
-            initialData.images.split(",").map((item, index) => (
+            initialData.images.map((item, index) => (
               <div key={index} className="flex relative">
                 <div>
                   <Image src={item} alt={"pic"} width={200} height={300} className="rounded-xl border shadow-lg" />
@@ -162,14 +190,14 @@ const EditForm: React.FC<EditFormProps> = ({ initialData }) => {
           <Form.Item label="分类名称" name="category" rules={[{ required: true, message: "分类名称不能为空" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="颜色">
-            <TagForm setTags={setColors} tags={colors} />
+          <Form.Item label="颜色" name="colors">
+            <Input placeholder="比如：red、yellow、blue 仅支持逗号、顿号、空格进行分隔" />
           </Form.Item>
-          <Form.Item label="尺寸">
-            <TagForm setTags={setSizes} tags={sizes} />
+          <Form.Item label="尺寸" name="sizes">
+            <Input placeholder="比如：36 37 41 42 仅支持逗号、顿号、空格进行分隔" />
           </Form.Item>
-          <Form.Item label="标签">
-            <TagForm setTags={setTags} tags={tags} />
+          <Form.Item label="标签" name="tags">
+            <Input placeholder="比如：shoes，hot，summer 只支持逗号、顿号进行分隔" />
           </Form.Item>
         </div>
         <Form.Item>
