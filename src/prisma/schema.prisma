@@ -24,16 +24,16 @@ model Session {
 
 model User {
   id                String             @id @default(uuid())
-  email_address     UserEmailAddress[]
   first_name        String?
   last_name         String?
   last_sign_in_at   BigInt?
   profile_image_url String?
   image_url         String?
   object            String?
-  role              String?
   created_at        BigInt?
   updated_at        BigInt?
+  role              String?
+  email_address     UserEmailAddress[]
 
   @@map("aisnk_user")
 }
@@ -42,9 +42,10 @@ model UserEmailAddress {
   id            String  @id @default(uuid())
   email_address String?
   object        String?
-  user          User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id       String?
+  user          User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id], map: "aisnk_user_email_address_user_id_fkey")
   @@map("aisnk_user_email_address")
 }
 
