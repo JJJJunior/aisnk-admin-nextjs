@@ -1,5 +1,5 @@
 import React from "react";
-import NewForm from "@/components/products/NewForm";
+import NewForm from "@/app/admin/components/products/NewForm";
 
 const NewProduct = () => {
   return (

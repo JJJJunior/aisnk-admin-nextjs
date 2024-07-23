@@ -1,8 +1,8 @@
 "use client";
-import EditForm from "@/components/products/EditForm";
+import EditForm from "@/app/admin/components/products/EditForm";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Loader from "@/components/Loader";
+import Loader from "@/app/admin/components/Loader";
 
 import { ProductType } from "@/lib/types";
 

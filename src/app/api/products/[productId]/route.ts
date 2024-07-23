@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../../../../prisma";
+import prisma from "@/prisma";
 
 export const DELETE = async (req: NextRequest, { params }: { params: { productId: string } }) => {
   try {

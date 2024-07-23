@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
   const router = useRouter()
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
-    router.push(`/${e.key}`)
+    router.push(`/admin/${e.key}`)
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React from "react";
-import NewForm from "@/components/collections/NewForm";
+import NewForm from "@/app/admin/components/collections/NewForm";
 const NewCollection = () => {
   return (
     <div>

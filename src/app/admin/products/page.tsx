@@ -1,21 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import DataTable from "@/components/products/DataTable";
-import { useRouter } from "next/navigation";
+import DataTable from "@/app/admin/components/products/DataTable";
 import axios from "axios";
-import Loader from "@/components/Loader";
+import Loader from "@/app/admin/components/Loader";
 
 const Products = () => {
-  const { userId } = useAuth();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
-  if (!userId) {
-    router.push("/sign-in");
-  }
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
@@ -42,7 +35,7 @@ const Products = () => {
     <div>
       <div>
         <Button type="primary">
-          <Link href="/products/new">
+          <Link href="/admin/products/new">
             添加产品
             <PlusCircleOutlined className="ml-2" />
           </Link>

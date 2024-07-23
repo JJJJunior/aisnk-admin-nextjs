@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Form, Input, InputNumber, Select, Spin, message } from "antd";
-import UploadImages from "@/components/UploadImages";
+import UploadImages from "@/app/admin/components/UploadImages";
 import Image from "next/image";
 import { CloseSquareOutlined, LoadingOutlined } from "@ant-design/icons";
 import { ProductType, CollectionType } from "@/lib/types";
@@ -71,7 +71,7 @@ const EditForm = ({ productData }: { productData: any }) => {
       const res = await axios.post(`/api/products/${initialData.id}`, newProduct);
       if (res.status === 200) {
         message.success("修改产品成功");
-        router.push("/products");
+        router.push("/admin/products");
       }
     } catch (err) {
       console.error(err);
@@ -215,7 +215,7 @@ const EditForm = ({ productData }: { productData: any }) => {
               {loading ? <Spin indicator={<LoadingOutlined spin />} /> : "保存"}
             </Button>
             <Button type="primary">
-              <Link href="/products">取消</Link>
+              <Link href="/admin/products">取消</Link>
             </Button>
           </div>
         </Form.Item>

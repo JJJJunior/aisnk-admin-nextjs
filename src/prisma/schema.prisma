@@ -7,6 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id             String  @id @default(uuid())
+  user_id        String?
+  abandon_at     BigInt?
+  client_id      String?
+  created_at     BigInt?
+  expires_at     BigInt?
+  last_active_at BigInt?
+  object         String?
+  status         String?
+  updated_at     BigInt?
+
+  @@map("aisnk_user_session")
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email_address     UserEmailAddress[]
+  first_name        String?
+  last_name         String?
+  last_sign_in_at   BigInt?
+  profile_image_url String?
+  image_url         String?
+  object            String?
+  created_at        BigInt?
+  updated_at        BigInt?
+
+  @@map("aisnk_user")
+}
+
+model UserEmailAddress {
+  id            String  @id @default(uuid())
+  email_address String?
+  object        String?
+  user          User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String?
+
+  @@map("aisnk_user_email_address")
+}
+
 model ProductsOnOrders {
   productId      String
   orderId        String
@@ -71,52 +111,11 @@ model Customer {
   @@map("aisnk_customer")
 }
 
-model Session {
-  id             String  @id @default(uuid())
-  user_id        String?
-  abandon_at     BigInt?
-  client_id      String?
-  created_at     BigInt?
-  expires_at     BigInt?
-  last_active_at BigInt?
-  object         String?
-  status         String?
-  updated_at     BigInt?
-
-  @@map("aisnk_session")
-}
-
-model User {
-  id                String         @id @default(uuid())
-  first_name        String?
-  last_name         String?
-  last_sign_in_at   BigInt?
-  profile_image_url String?
-  image_url         String?
-  object            String?
-  created_at        BigInt?
-  updated_at        BigInt?
-  email_address     EmailAddress[]
-
-  @@map("aisnk_user")
-}
-
-model EmailAddress {
-  id            String  @id @default(uuid())
-  email_address String?
-  object        String?
-  user_id       String?
-  user          User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id], map: "aisnk_email_address_user_id_fkey")
-  @@map("aisnk_email_address")
-}
-
 model Collection {
   id          String                  @id @default(uuid())
   title       String                  @unique
   description String?                 @db.Text
-  images      String?                 @db.Text
+  images      String                  @db.Text
   createdAt   DateTime                @default(now())
   updatedAt   DateTime                @default(now())
   status      String?

@@ -119,7 +119,7 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource, fetchCollections }) =
       dataIndex: "title",
       key: "title",
       ...getColumnSearchProps("title"),
-      render: (_, record) => <Link href={`/collections/${record.id}`}>{record.title}</Link>,
+      render: (_, record) => <Link href={`/admin/collections/${record.id}`}>{record.title}</Link>,
     },
     {
       title: "栏目描述",
@@ -144,7 +144,7 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource, fetchCollections }) =
         dataSource.length >= 1 ? (
           <div className="flex items-center gap-2">
             <Button>
-              <Link href={`/collections/${record.id}`}>编辑</Link>
+              <Link href={`/admin/collections/${record.id}`}>编辑</Link>
             </Button>
             <Popconfirm title="确定删除?" onConfirm={() => handleDelete(record.id)}>
               <Button>删除</Button>

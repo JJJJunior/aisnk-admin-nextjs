@@ -1,6 +1,4 @@
-import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
 import prisma from "@/prisma";
 
 export async function POST(req: Request) {
@@ -26,52 +24,27 @@ export async function POST(req: Request) {
 
   // Get the body
   const payload = await req.json();
-  const body = JSON.stringify(payload);
 
-  // Create a new Svix instance with your secret.
-  const wh = new Webhook(WEBHOOK_SECRET);
+  // console.log(payload.type);
 
-  let evt: WebhookEvent;
-
-  // Verify the payload with the headers
-  try {
-    evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as WebhookEvent;
-  } catch (err) {
-    console.error("Error verifying webhook:", err);
-    return new Response("Error occured", {
-      status: 400,
-    });
-  }
-
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
-  // const { id } = evt.data;
-  // const eventType = evt.type;
-  // console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-  // console.log("Webhook body:", body);
-
-  if (evt.type === "user.created") {
+  if (payload.type === "user.created") {
     try {
       await prisma.user.create({
         data: {
-          id: evt.data.id,
+          id: payload.data.id,
           email_address: {
-            create: evt.data.email_addresses.map((item) => ({
+            create: payload.data.email_addresses.map((item) => ({
               id: item.id,
               email_address: item.email_address,
               object: item.object,
             })),
           },
-          first_name: evt.data.first_name,
-          last_name: evt.data.last_name,
-          last_sign_in_at: evt.data.last_sign_in_at,
-          image_url: evt.data.image_url,
-          object: evt.data.object,
-          created_at: evt.data.created_at,
+          first_name: payload.data.first_name,
+          last_name: payload.data.last_name,
+          last_sign_in_at: payload.data.last_sign_in_at,
+          image_url: payload.data.image_url,
+          object: payload.data.object,
+          created_at: payload.data.created_at,
         },
       });
       return new Response("User created successfully", { status: 200 });
@@ -81,25 +54,25 @@ export async function POST(req: Request) {
     }
   }
 
-  if (evt.type === "user.updated") {
+  if (payload.type === "user.updated") {
     try {
       await prisma.user.update({
         where: {
-          id: evt.data.id,
+          id: payload.data.id,
         },
         data: {
           email_address: {
-            create: evt.data.email_addresses.map((item) => ({
+            create: payload.data.email_addresses.map((item) => ({
               email_address: item.email_address,
               object: item.object,
             })),
           },
-          first_name: evt.data.first_name,
-          last_name: evt.data.last_name,
-          last_sign_in_at: evt.data.last_sign_in_at,
-          image_url: evt.data.image_url,
-          object: evt.data.object,
-          created_at: evt.data.created_at,
+          first_name: payload.data.first_name,
+          last_name: payload.data.last_name,
+          last_sign_in_at: payload.data.last_sign_in_at,
+          image_url: payload.data.image_url,
+          object: payload.data.object,
+          created_at: payload.data.created_at,
         },
       });
       return new Response("User updated successfully", { status: 200 });
@@ -109,11 +82,11 @@ export async function POST(req: Request) {
     }
   }
 
-  if (evt.type === "user.deleted") {
+  if (payload.type === "user.deleted") {
     try {
       await prisma.user.delete({
         where: {
-          id: evt.data.id,
+          id: payload.data.id,
         },
       });
       return new Response("User deleted successfully", { status: 200 });
@@ -123,20 +96,20 @@ export async function POST(req: Request) {
     }
   }
 
-  if (evt.type === "session.created") {
+  if (payload.type === "session.created") {
     try {
       await prisma.session.create({
         data: {
-          id: evt.data.id,
-          client_id: evt.data.client_id,
-          session_token: evt.data.session_token,
-          created_at: evt.data.created_at,
-          expires_at: evt.data.expires_at,
-          last_active_at: evt.data.last_active_at,
-          object: evt.data.object,
-          status: evt.data.status,
-          updated_at: evt.data.updated_at,
-          user_id: evt.data.user_id,
+          id: payload.data.id,
+          client_id: payload.data.client_id,
+          session_token: payload.data.session_token,
+          created_at: payload.data.created_at,
+          expires_at: payload.data.expires_at,
+          last_active_at: payload.data.last_active_at,
+          object: payload.data.object,
+          status: payload.data.status,
+          updated_at: payload.data.updated_at,
+          user_id: payload.data.user_id,
         },
       });
       return new Response("Session created successfully", { status: 200 });
@@ -146,22 +119,22 @@ export async function POST(req: Request) {
     }
   }
 
-  if (evt.type === "session.removed") {
+  if (payload.type === "session.removed") {
     try {
       await prisma.session.update({
         where: {
-          id: evt.data.id,
+          id: payload.data.id,
         },
         data: {
-          client_id: evt.data.client_id,
-          session_token: evt.data.session_token,
-          created_at: evt.data.created_at,
-          expires_at: evt.data.expires_at,
-          last_active_at: evt.data.last_active_at,
-          object: evt.data.object,
-          status: evt.data.status,
-          updated_at: evt.data.updated_at,
-          user_id: evt.data.user_id,
+          client_id: payload.data.client_id,
+          session_token: payload.data.session_token,
+          created_at: payload.data.created_at,
+          expires_at: payload.data.expires_at,
+          last_active_at: payload.data.last_active_at,
+          object: payload.data.object,
+          status: payload.data.status,
+          updated_at: payload.data.updated_at,
+          user_id: payload.data.user_id,
         },
       });
       return new Response("Session created successfully", { status: 200 });
@@ -170,22 +143,22 @@ export async function POST(req: Request) {
       return new Response("Internal error", { status: 500 });
     }
   }
-  if (evt.type === "session.ended") {
+  if (payload.type === "session.ended") {
     try {
       await prisma.session.update({
         where: {
-          id: evt.data.id,
+          id: payload.data.id,
         },
         data: {
-          client_id: evt.data.client_id,
-          session_token: evt.data.session_token,
-          created_at: evt.data.created_at,
-          expires_at: evt.data.expires_at,
-          last_active_at: evt.data.last_active_at,
-          object: evt.data.object,
-          status: evt.data.status,
-          updated_at: evt.data.updated_at,
-          user_id: evt.data.user_id,
+          client_id: payload.data.client_id,
+          session_token: payload.data.session_token,
+          created_at: payload.data.created_at,
+          expires_at: payload.data.expires_at,
+          last_active_at: payload.data.last_active_at,
+          object: payload.data.object,
+          status: payload.data.status,
+          updated_at: payload.data.updated_at,
+          user_id: payload.data.user_id,
         },
       });
       return new Response("Session created successfully", { status: 200 });
@@ -194,22 +167,22 @@ export async function POST(req: Request) {
       return new Response("Internal error", { status: 500 });
     }
   }
-  if (evt.type === "session.revoked") {
+  if (payload.type === "session.revoked") {
     try {
       await prisma.session.update({
         where: {
-          id: evt.data.id,
+          id: payload.data.id,
         },
         data: {
-          client_id: evt.data.client_id,
-          session_token: evt.data.session_token,
-          created_at: evt.data.created_at,
-          expires_at: evt.data.expires_at,
-          last_active_at: evt.data.last_active_at,
-          object: evt.data.object,
-          status: evt.data.status,
-          updated_at: evt.data.updated_at,
-          user_id: evt.data.user_id,
+          client_id: payload.data.client_id,
+          session_token: payload.data.session_token,
+          created_at: payload.data.created_at,
+          expires_at: payload.data.expires_at,
+          last_active_at: payload.data.last_active_at,
+          object: payload.data.object,
+          status: payload.data.status,
+          updated_at: payload.data.updated_at,
+          user_id: payload.data.user_id,
         },
       });
       return new Response("Session created successfully", { status: 200 });
@@ -218,4 +191,6 @@ export async function POST(req: Request) {
       return new Response("Internal error", { status: 500 });
     }
   }
+
+  return new Response("", { status: 200 });
 }

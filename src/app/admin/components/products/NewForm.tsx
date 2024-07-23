@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
-import UploadImages from "@/components/UploadImages";
+import UploadImages from "@/app/admin/components/UploadImages";
 import Image from "next/image";
 import { CloseSquareOutlined, LoadingOutlined } from "@ant-design/icons";
 import { ProductType, CollectionType } from "@/lib/types";
@@ -57,7 +57,7 @@ const NewForm: React.FC = () => {
         const res = await axios.post(`/api/products/`, newProduct);
         if (res.status === 200) {
           message.success("创建产品成功");
-          router.push("/products");
+          router.push("/admin/products");
         }
       } catch (err) {
         console.error(err);
@@ -209,7 +209,7 @@ const NewForm: React.FC = () => {
               {loading ? <Spin indicator={<LoadingOutlined spin />} /> : "保存"}
             </Button>
             <Button type="primary">
-              <Link href="/products">取消</Link>
+              <Link href="/admin/products">取消</Link>
             </Button>
           </div>
         </Form.Item>

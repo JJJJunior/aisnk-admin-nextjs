@@ -1,16 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import prisma from "../../../../../prisma";
+import {NextRequest, NextResponse} from "next/server";
+import {auth} from "@clerk/nextjs/server";
+import prisma from "@/prisma"
 
-export const DELETE = async (req: NextRequest, { params }: { params: { collectionId: string } }) => {
+export const DELETE = async (req: NextRequest, {params}: { params: { collectionId: string } }) => {
   try {
-    const { userId } = auth();
+    const {userId} = auth();
     if (!userId) {
-      return new NextResponse("Unauthorized!", { status: 403 });
+      return new NextResponse("Unauthorized!", {status: 403});
     }
 
     if (params.collectionId === "") {
-      return new NextResponse("No such collection id found", { status: 404 });
+      return new NextResponse("No such collection id found", {status: 404});
     }
 
     //根据传递过来params删除栏目
@@ -20,14 +20,14 @@ export const DELETE = async (req: NextRequest, { params }: { params: { collectio
       },
     });
 
-    return new NextResponse("Collection is deleted!", { status: 200 });
+    return new NextResponse("Collection is deleted!", {status: 200});
   } catch (err) {
     console.log("[collection_Id_DELETE]", err);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return new NextResponse("Internal Server Error", {status: 500});
   }
 };
 
-export const GET = async (req: NextRequest, { params }: { params: { collectionId: string } }) => {
+export const GET = async (req: NextRequest, {params}: { params: { collectionId: string } }) => {
   try {
     const collection = await prisma.collection.findUnique({
       where: {
@@ -39,20 +39,20 @@ export const GET = async (req: NextRequest, { params }: { params: { collectionId
     });
 
     if (!collection) {
-      return new NextResponse(JSON.stringify({ message: "Collection not found" }), { status: 404 });
+      return new NextResponse(JSON.stringify({message: "Collection not found"}), {status: 404});
     }
-    return NextResponse.json(collection, { status: 200 });
+    return NextResponse.json(collection, {status: 200});
   } catch (err) {
     console.log(err);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return new NextResponse("Internal Server Error", {status: 500});
   }
 };
 
-export const POST = async (req: NextRequest, { params }: { params: { collectionId: string } }) => {
+export const POST = async (req: NextRequest, {params}: { params: { collectionId: string } }) => {
   try {
-    const { userId } = auth();
+    const {userId} = auth();
     if (!userId) {
-      return new NextResponse("Unauthorized!", { status: 404 });
+      return new NextResponse("Unauthorized!", {status: 404});
     }
 
     let collection = await prisma.collection.findUnique({
@@ -62,14 +62,16 @@ export const POST = async (req: NextRequest, { params }: { params: { collectionI
     });
 
     if (!collection) {
-      return new NextResponse("Collection not found", { status: 404 });
+      return new NextResponse("Collection not found", {status: 404});
     }
 
-    const { title, description, images } = await req.json();
+    const {title, description, images} = await req.json();
 
-    if (!title || !description) {
-      return new NextResponse("Title and description are required!", { status: 400 });
+    if (!title || !description || !images) {
+      return new NextResponse("Title and description images are required!", {status: 400});
     }
+
+    console.log(images)
 
     collection = await prisma.collection.update({
       where: {
@@ -78,12 +80,12 @@ export const POST = async (req: NextRequest, { params }: { params: { collectionI
       data: {
         title,
         description,
-        images: images.length > 1 ? images.join(",") : images[0],
+        images: images?.length > 1 ? images.join(",") : images[0],
       },
     });
-    return NextResponse.json(collection, { status: 200 });
+    return NextResponse.json(collection, {status: 200});
   } catch (err) {
     console.log(err);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return new NextResponse("Internal Server Error", {status: 500});
   }
 };

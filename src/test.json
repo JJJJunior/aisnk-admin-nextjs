@@ -1,0 +1,23 @@
+{
+  "data": {
+    "abandon_at": 1724316471526,
+    "actor": null,
+    "client_id": "client_2jdkifokxuYridfWPNhSJL9TPqH",
+    "created_at": 1721724471526,
+    "expire_at": 1722329271526,
+    "id": "sess_2jdkiwYTkG4aPT3HE7i87BLuBir",
+    "last_active_at": 1721726600617,
+    "object": "session",
+    "status": "ended",
+    "updated_at": 1721726600627,
+    "user_id": "user_2jUxdtDphZOZGv5c4jcTvR7l5tQ"
+  },
+  "event_attributes": {
+    "http_request": {
+      "client_ip": "52.220.22.127",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+    }
+  },
+  "object": "event",
+  "type": "session.ended"
+}

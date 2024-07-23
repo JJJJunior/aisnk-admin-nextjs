@@ -1,9 +1,9 @@
 "use client";
-import EditForm from "@/components/collections/EditForm";
+import EditForm from "@/app/admin/components/collections/EditForm";
 import { CollectionType } from "@/lib/types";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Loader from "@/components/Loader";
+import Loader from "@/app/admin/components/Loader";
 
 const CollectionDetail = ({ params }: { params: { collectionId: string } }) => {
   const [loading, setLoading] = useState<boolean>(false);

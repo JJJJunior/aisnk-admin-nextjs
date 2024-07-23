@@ -1,4 +1,4 @@
-import prisma from "../../../../../../prisma";
+import prisma from "../../../../../prisma";
 import { NextResponse } from "next/server";
 
 export const GET = async (req: Request, { params }: { params: { title: string } }) => {
