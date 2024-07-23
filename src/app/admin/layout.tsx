@@ -1,22 +1,46 @@
 "use client";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { Button, ConfigProvider } from "antd";
+import { Button, ConfigProvider, message } from "antd";
 import Navbar from "@/app/admin/components/Navbar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SignedIn, SignedOut, useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import Loader from "./components/Loader";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  //鉴权流程
   const { userId } = useAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-  return !userId ? (
-    router.push("/sign-in")
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(`/api/users/${userId}`);
+      if (res.status === 200) {
+        console.log(res.data);
+        router.push("/admin/home");
+      }
+    } catch (err) {
+      console.error(err);
+      message.error("No Permission to Access!");
+      router.push("/sign-in");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  return loading ? (
+    <Loader />
   ) : (
     <ConfigProvider
       theme={{

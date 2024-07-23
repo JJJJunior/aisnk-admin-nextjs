@@ -31,6 +31,7 @@ model User {
   profile_image_url String?
   image_url         String?
   object            String?
+  role              String?
   created_at        BigInt?
   updated_at        BigInt?
 
