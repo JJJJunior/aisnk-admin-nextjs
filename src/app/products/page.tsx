@@ -6,12 +6,13 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import DataTable from "@/components/products/DataTable";
 import { useRouter } from "next/navigation";
-import { ProductType } from "@/lib/types";
 import axios from "axios";
+import Loader from "@/components/Loader";
 
 const Products = () => {
   const { userId } = useAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   if (!userId) {
     router.push("/sign-in");
   }
@@ -20,7 +21,10 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get("/api/products");
-      res.status === 200 && setProducts(res.data);
+      if (res.status === 200) {
+        setProducts(res.data);
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -30,9 +34,11 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  console.log(products);
+  // console.log(products);
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <div>
       <div>
         <Button type="primary">
@@ -43,7 +49,7 @@ const Products = () => {
         </Button>
       </div>
       <div>
-        <DataTable dataSource={products} />
+        <DataTable dataSource={products} fetchProducts={fetchProducts} />
       </div>
     </div>
   );

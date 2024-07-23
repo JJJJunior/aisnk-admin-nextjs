@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "@/prisma";
+import prisma from "../../../../../prisma";
 
 export const DELETE = async (req: NextRequest, { params }: { params: { collectionId: string } }) => {
   try {
@@ -65,10 +65,10 @@ export const POST = async (req: NextRequest, { params }: { params: { collectionI
       return new NextResponse("Collection not found", { status: 404 });
     }
 
-    const { title, description, image } = await req.json();
+    const { title, description, images } = await req.json();
 
-    if (!title || !image) {
-      return new NextResponse("Title and image are required!", { status: 400 });
+    if (!title || !description) {
+      return new NextResponse("Title and description are required!", { status: 400 });
     }
 
     collection = await prisma.collection.update({
@@ -78,7 +78,7 @@ export const POST = async (req: NextRequest, { params }: { params: { collectionI
       data: {
         title,
         description,
-        image,
+        images: images.length > 1 ? images.join(",") : images[0],
       },
     });
     return NextResponse.json(collection, { status: 200 });

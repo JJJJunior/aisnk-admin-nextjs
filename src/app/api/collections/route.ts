@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "../../../../prisma";
+import NewCollection from "@/app/collections/new/page";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -21,10 +22,11 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse("Collection already exists", { status: 400 });
     }
 
-    if (!title || !images) {
+    if (!title || !description) {
       return new NextResponse("Title and image are required!", { status: 400 });
     }
 
+    console.log(NewCollection);
     const newCollection = await prisma.collection.create({
       data: {
         title,

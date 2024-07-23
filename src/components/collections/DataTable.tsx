@@ -1,18 +1,20 @@
 import React, { useRef, useState } from "react";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import { Button, Input, InputRef, Popconfirm, Row, Space, Table, TableColumnsType, TableColumnType } from "antd";
+import { Button, Input, InputRef, Popconfirm, Space, Table, TableColumnsType, TableColumnType, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { CollectionType } from "@/lib/types";
 import Link from "next/link";
+import axios from "axios";
 
 type DataIndex = keyof CollectionType;
 
 interface DataTableProps {
   dataSource: CollectionType[];
+  fetchCollections: () => Promise<void>;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
+const DataTable: React.FC<DataTableProps> = ({ dataSource, fetchCollections }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -23,8 +25,18 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleDelete = (key: React.Key) => {
+  const handleDelete = async (key: React.Key) => {
     console.log(key);
+    try {
+      const res = await axios.delete(`/api/collections/${key}`);
+      if (res.status === 200) {
+        message.success("删除成功");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      fetchCollections();
+    }
   };
 
   const handleReset = (clearFilters: () => void) => {

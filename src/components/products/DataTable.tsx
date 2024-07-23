@@ -1,19 +1,21 @@
 import React, { useRef, useState } from "react";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import { Button, Input, InputRef, Popconfirm, Row, Space, Table, TableColumnsType, TableColumnType } from "antd";
+import { Button, Input, InputRef, Popconfirm, Space, Table, TableColumnsType, TableColumnType, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { ProductType } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 
 type DataIndex = keyof ProductType;
 
 interface DataTableProps {
   dataSource: ProductType[];
+  fetchProducts: () => Promise<void>; //用于table页面的刷新
 }
 
-const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
+const DataTable: React.FC<DataTableProps> = ({ dataSource, fetchProducts }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -24,8 +26,18 @@ const DataTable: React.FC<DataTableProps> = ({ dataSource }) => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleDelete = (key: React.Key) => {
-    console.log(key);
+  const handleDelete = async (key: React.Key) => {
+    // console.log(key);
+    try {
+      const res = await axios.delete(`/api/products/${key}`);
+      if (res.status === 200) {
+        message.success("删除成功");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      fetchProducts();
+    }
   };
 
   const handleReset = (clearFilters: () => void) => {

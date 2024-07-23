@@ -14,9 +14,6 @@ const NewForm: React.FC = () => {
   const [form] = Form.useForm();
   const [images, setImages] = useState<string[]>([]);
   const [collections, setCollections] = useState<CollectionType[]>([]);
-  const [colors, setColors] = useState("");
-  const [sizes, setSizes] = useState("");
-  const [tags, setTags] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 

@@ -55,18 +55,6 @@ const EditForm = ({ productData }: { productData: any }) => {
   useEffect(() => {
     fetchCollections();
   }, []);
-  // message.success("产品标题名称可用");
-  const checkUniqueTitle = async (title: string) => {
-    try {
-      const res = await axios.get(`/api/products/check/${title}`);
-      if (res.status === 200 && res.data?.title === title) {
-        return false;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    return true;
-  };
 
   const onFinish = async (values: any) => {
     // console.log(values);
@@ -78,24 +66,19 @@ const EditForm = ({ productData }: { productData: any }) => {
       tags: replaceSymbolsInTags(values.tags),
     };
     // console.log("Received values of form: ", newProduct);
-    if ((await checkUniqueTitle(values.title)) === true) {
-      setLoading(true);
-      try {
-        const res = await axios.post(`/api/products/${initialData.id}`, newProduct);
-        if (res.status === 200) {
-          message.success("修改产品成功");
-          router.push("/products");
-        }
-      } catch (err) {
-        console.error(err);
-        message.error("修改产品失败");
-      } finally {
-        cleanAll();
-        setLoading(false);
+    setLoading(true);
+    try {
+      const res = await axios.post(`/api/products/${initialData.id}`, newProduct);
+      if (res.status === 200) {
+        message.success("修改产品成功");
+        router.push("/products");
       }
-    } else {
-      message.error("产品标题名称已存在");
-      return;
+    } catch (err) {
+      console.error(err);
+      message.error("修改产品失败");
+    } finally {
+      cleanAll();
+      setLoading(false);
     }
   };
   const cleanAll = () => {

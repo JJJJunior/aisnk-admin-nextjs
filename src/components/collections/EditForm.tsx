@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button, Form, Input, Spin, message } from "antd";
 import UploadImages from "@/components/UploadImages";
 import Image from "next/image";
@@ -9,12 +9,27 @@ import { CollectionType } from "@/lib/types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-const CollectionForm: React.FC = () => {
+const EditForm = ({ collectionData }: { collectionData: any }) => {
   const [form] = Form.useForm();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  const initialData: CollectionType = useMemo(
+    () => ({
+      id: collectionData?.id || "",
+      title: collectionData?.title || "",
+      description: collectionData?.description || "",
+      images: collectionData ? collectionData.images?.split(",").filter((item: string) => item !== "") : [],
+      products: collectionData?.products,
+    }),
+    [collectionData]
+  );
+
+  useEffect(() => {
+    setImages(initialData.images);
+  }, [initialData.images]);
 
   const onFinish = async (values: any) => {
     const newCollection: CollectionType = {
@@ -24,13 +39,14 @@ const CollectionForm: React.FC = () => {
     // console.log("Received values of form: ", newCollection);
     setLoading(true);
     try {
-      const res = await axios.post("/api/collections", newCollection);
+      const res = await axios.post(`/api/collections/${initialData.id}`, newCollection);
       if (res.status === 200) {
-        message.success("创建栏目成功");
+        message.success("修改栏目成功");
         router.push("/collections");
       }
     } catch (err) {
       console.log(err);
+      message.error("修改栏目失败");
     } finally {
       cleanAll();
       setLoading(false);
@@ -45,9 +61,11 @@ const CollectionForm: React.FC = () => {
     evt.preventDefault();
     setImages((prevState) => prevState.filter((url) => url !== item));
   };
+
+  console.log(images);
   return (
     <div>
-      <Form form={form} onFinish={onFinish} layout="vertical">
+      <Form form={form} onFinish={onFinish} layout="vertical" initialValues={initialData}>
         <Form.Item label="栏目名称" name="title" rules={[{ required: true, message: "栏目名称不能为空" }]}>
           <Input />
         </Form.Item>
@@ -55,7 +73,8 @@ const CollectionForm: React.FC = () => {
           <UploadImages setImages={setImages} />
         </Form.Item>
         <div className="flex flex-wrap gap-4">
-          {images.length > 0 &&
+          {images &&
+            images.length > 0 &&
             images.map((item, index) => (
               <div key={index} className="flex relative">
                 <div className="h-42 w-36">
@@ -90,4 +109,4 @@ const CollectionForm: React.FC = () => {
   );
 };
 
-export default CollectionForm;
+export default EditForm;

@@ -8,11 +8,14 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { CollectionType } from "@/lib/types";
 import axios from "axios";
+import Loader from "@/components/Loader";
 
 const Collections = () => {
   const { userId } = useAuth();
   const router = useRouter();
   const [collections, setCollections] = useState<CollectionType[]>([]);
+  const [loading, setLoading] = useState(true);
+
   if (!userId) {
     router.push("/sign-in");
   }
@@ -20,7 +23,10 @@ const Collections = () => {
   const fetchCollections = async () => {
     try {
       const res = await axios.get("/api/collections");
-      res.status === 200 && setCollections(res.data);
+      if (res.status === 200) {
+        setCollections(res.data);
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -30,9 +36,11 @@ const Collections = () => {
     fetchCollections();
   }, []);
 
-  console.log(collections);
+  // console.log(collections);
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <div>
       <div>
         <Button type="primary">
@@ -43,7 +51,7 @@ const Collections = () => {
         </Button>
       </div>
       <div>
-        <DataTable dataSource={collections} />
+        <DataTable dataSource={collections} fetchCollections={fetchCollections} />
       </div>
     </div>
   );

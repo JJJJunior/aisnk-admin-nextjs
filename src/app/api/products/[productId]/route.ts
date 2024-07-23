@@ -81,14 +81,11 @@ export const POST = async (req: NextRequest, { params }: { params: { productId: 
 
     const { productId } = params;
 
-    // 解析请求的 JSON 数据
-    const { title, description, media, category, collections, tags, status, sizes, colors, price, expense } =
+    const { title, description, images, category, collections, stock, tags, status, sizes, colors, price, expense } =
       await req.json();
 
-    if (!title || !description || !media || !category || !price || !expense || media.length === 0) {
-      return new NextResponse("Not enough data to create a new product!", {
-        status: 400,
-      });
+    if (!title || !description || !images || !category || !price) {
+      return new NextResponse("Not enough data to create a product!", { status: 400 });
     }
 
     // 查找现有产品,主要作用是查出产品目前关联的栏目数据
@@ -115,7 +112,7 @@ export const POST = async (req: NextRequest, { params }: { params: { productId: 
       data: {
         title,
         description,
-        media,
+        images: images.length > 1 ? images.join(",") : images[0],
         category,
         collections: {
           create: collections.map((collectionId: string) => ({
@@ -128,6 +125,7 @@ export const POST = async (req: NextRequest, { params }: { params: { productId: 
         },
         tags,
         status,
+        stock,
         sizes,
         colors,
         price,
