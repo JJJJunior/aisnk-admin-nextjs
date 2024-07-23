@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
+import React, { useState, useEffect, useMemo } from "react";
+import { Button, Form, Input, InputNumber, Select, Spin, message } from "antd";
 import UploadImages from "@/components/UploadImages";
 import Image from "next/image";
 import { CloseSquareOutlined, LoadingOutlined } from "@ant-design/icons";
 import { ProductType, CollectionType } from "@/lib/types";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 
@@ -13,26 +14,34 @@ const EditForm = ({ productData }: { productData: any }) => {
   const [collections, setCollections] = useState<CollectionType[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   //初始化数据 initialData 数据是给form提供默认呈现的
   // 三个颜色、尺寸、标签三个状态单独管理，这里有做数据初始化。数据库存储是string逗号隔开
   // 图片状态单独管理，图片只保存上传成功的url
-  // console.log(productData);
-  const initialData: ProductType = {
-    id: productData?.id || "",
-    title: productData?.title || "",
-    price: productData?.price || 0,
-    stock: productData?.stock || 0,
-    description: productData?.description || "",
-    images: productData ? productData.images?.split(",") : [],
-    category: productData?.category || "",
-    expense: productData?.expense || 0,
-    status: productData?.status || "",
-    colors: productData?.colors,
-    sizes: productData?.sizes,
-    tags: productData?.tags,
-    collections: productData?.collections.map((collection: any) => collection.collectionId) || [],
-  };
+  const initialData: ProductType = useMemo(
+    () => ({
+      id: productData?.id || "",
+      title: productData?.title || "",
+      price: productData?.price || 0,
+      stock: productData?.stock || 0,
+      description: productData?.description || "",
+      images: productData ? productData.images?.split(",") : [],
+      category: productData?.category || "",
+      expense: productData?.expense || 0,
+      status: productData?.status || "",
+      colors: productData?.colors,
+      sizes: productData?.sizes,
+      tags: productData?.tags,
+      collections: productData?.collections.map((collection: any) => collection.collectionId) || [],
+    }),
+    [productData]
+  );
+
+  //
+  useEffect(() => {
+    setImages(initialData.images);
+  }, [initialData.images]);
 
   const fetchCollections = async () => {
     try {
@@ -46,30 +55,48 @@ const EditForm = ({ productData }: { productData: any }) => {
   useEffect(() => {
     fetchCollections();
   }, []);
+  // message.success("产品标题名称可用");
+  const checkUniqueTitle = async (title: string) => {
+    try {
+      const res = await axios.get(`/api/products/check/${title}`);
+      if (res.status === 200 && res.data?.title === title) {
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  };
 
   const onFinish = async (values: any) => {
     // console.log(values);
     const newProduct: ProductType = {
       ...values,
+      images: images,
       colors: replaceSymbols(values.colors),
       sizes: replaceSymbols(values.sizes),
       tags: replaceSymbolsInTags(values.tags),
     };
-    console.log("Received values of form: ", newProduct);
-    // setLoading(true);
-    // try {
-    //   const res = await axios.post("/api/products", newProduct);
-    //   if (res.status === 200) {
-    //     message.success("修改产品成功");
-    //     router.push("/products");
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   message.error("修改产品失败");
-    // } finally {
-    //   cleanAll();
-    //   setLoading(false);
-    // }
+    // console.log("Received values of form: ", newProduct);
+    if ((await checkUniqueTitle(values.title)) === true) {
+      setLoading(true);
+      try {
+        const res = await axios.post(`/api/products/${initialData.id}`, newProduct);
+        if (res.status === 200) {
+          message.success("修改产品成功");
+          router.push("/products");
+        }
+      } catch (err) {
+        console.error(err);
+        message.error("修改产品失败");
+      } finally {
+        cleanAll();
+        setLoading(false);
+      }
+    } else {
+      message.error("产品标题名称已存在");
+      return;
+    }
   };
   const cleanAll = () => {
     form.resetFields();
@@ -146,7 +173,7 @@ const EditForm = ({ productData }: { productData: any }) => {
           rules={[
             {
               validator: () => {
-                if (!initialData.images || initialData.images.length === 0) {
+                if (!images || images.length === 0) {
                   return Promise.reject(new Error("请至少上传一张图片"));
                 }
                 return Promise.resolve();
@@ -157,9 +184,8 @@ const EditForm = ({ productData }: { productData: any }) => {
           <UploadImages setImages={setImages} />
         </Form.Item>
         <div className="flex flex-wrap gap-4">
-          {initialData?.images &&
-            initialData.images.length > 0 &&
-            initialData.images.map((item, index) => (
+          {images.length > 0 &&
+            images.map((item, index) => (
               <div key={index} className="flex relative">
                 <div>
                   <Image src={item} alt={"pic"} width={200} height={300} className="rounded-xl border shadow-lg" />

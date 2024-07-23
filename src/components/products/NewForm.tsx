@@ -33,6 +33,17 @@ const NewForm: React.FC = () => {
     fetchCollections();
   }, []);
 
+  const checkUniqueTitle = async (title: string) => {
+    try {
+      const res = await axios.get(`/api/products/check/${title}`);
+      if (res.status === 200 && res.data?.title === title) {
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  };
   const onFinish = async (values: any) => {
     // console.log(values);
     const newProduct: ProductType = {
@@ -43,19 +54,24 @@ const NewForm: React.FC = () => {
       tags: replaceSymbolsInTags(values.tags),
     };
     // console.log("Received values of form: ", newProduct);
-    setLoading(true);
-    try {
-      const res = await axios.post("/api/products", newProduct);
-      if (res.status === 200) {
-        message.success("创建产品成功");
-        router.push("/products");
+    if ((await checkUniqueTitle(values.title)) === true) {
+      setLoading(true);
+      try {
+        const res = await axios.post(`/api/products/`, newProduct);
+        if (res.status === 200) {
+          message.success("创建产品成功");
+          router.push("/products");
+        }
+      } catch (err) {
+        console.error(err);
+        message.error("创建产品失败");
+      } finally {
+        cleanAll();
+        setLoading(false);
       }
-    } catch (err) {
-      console.error(err);
-      message.error("创建产品失败");
-    } finally {
-      cleanAll();
-      setLoading(false);
+    } else {
+      message.error("产品标题名称已存在");
+      return;
     }
   };
   const cleanAll = () => {
