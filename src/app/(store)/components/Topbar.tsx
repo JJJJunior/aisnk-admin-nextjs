@@ -9,23 +9,23 @@ const Topbar = () => {
     {
       id: "sneakers",
       title: "Sneakers",
-      url: "/store",
+      url: "/sneakers",
     },
     {
       id: "streetwear",
       title: "Streetwear",
-      url: "/store/streetwear",
+      url: "/streetwear",
     },
     {
       id: "trending",
       title: "Trending",
-      url: "/store/trending",
+      url: "/trending",
     },
   ];
   return (
     <div className="bg-white sticky top-0 z-50 h-12 flex justify-around items-center mx-14">
-      {links.map((link) => (
-        <div className=" h-full w-full  text-gray-400" key={link.id}>
+      {links.map((link, index) => (
+        <div className=" h-full w-full  text-gray-400" key={index}>
           <Link
             href={link.url}
             className={`w-full h-full flex justify-center items-center transition duration-300 ease-in-out ${

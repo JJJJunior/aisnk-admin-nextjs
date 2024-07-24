@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 const page = () => {
   const router = useRouter();
-  return router.push("/store");
+  return router.push("/sneakers");
 };
 
 export default page;

@@ -41,10 +41,10 @@ const imagesList = [
 const MainCarousel: React.FC = () => (
   <Carousel autoplay arrows dotPosition="bottom" className="w-full">
     {imagesList.map((image) => (
-      <div className="h-80 mx-auto w-full flex">
+      <div className="h-80 mx-auto w-full flex" key={image.id}>
         <div className="flex gap-4 h-full justify-center">
           <Image src={image.src} width={520} height={420} alt={image.alt} key={image.id} className="items-center" />
-          <Image src={image.src} width={520} height={420} alt={image.alt} key={image.id} className="items-center" />
+          {/* <Image src={image.src} width={520} height={420} alt={image.alt} key={image.id} className="items-center" /> */}
         </div>
       </div>
     ))}

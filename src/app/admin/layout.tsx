@@ -19,6 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
+  // console.log(userId);
   const fetchUser = async () => {
     try {
       const res = await axios.get(`/api/users/${userId}`);

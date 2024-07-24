@@ -1,9 +1,9 @@
 import React from "react";
-import Notification from "@/app/store/components/Notification";
-import Footer from "@/app/store/components/Footer";
-import Header from "@/app/store/components/Header";
-import Topbar from "@/app/store/components/Topbar";
-import MainCarousel from "@/app/store/components/MainCarousel";
+import Notification from "@/app/(store)/components/Notification";
+import Footer from "@/app/(store)/components/Footer";
+import Header from "@/app/(store)/components/Header";
+import Topbar from "@/app/(store)/components/Topbar";
+import MainCarousel from "@/app/(store)/components/MainCarousel";
 
 export default function RootLayout({
   children,
