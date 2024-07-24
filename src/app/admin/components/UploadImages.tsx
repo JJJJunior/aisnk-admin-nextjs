@@ -1,14 +1,38 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload } from "antd";
 import { md5WithSalt } from "@/lib/md5";
 import axios from "axios";
+import ImgCrop from "antd-img-crop";
+import type { GetProp, UploadFile, UploadProps } from "antd";
 
 interface UploadImagesProps {
   setImages: (value: ((prevState: string[]) => string[]) | string[]) => void;
 }
 
 const UploadImages: React.FC<UploadImagesProps> = ({ setImages }) => {
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as FileType);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
   const uploadImage = (options) => {
     const { onSuccess, onError, file, onProgress } = options;
     const fmData = new FormData();
@@ -41,11 +65,20 @@ const UploadImages: React.FC<UploadImagesProps> = ({ setImages }) => {
       });
   };
   return (
-    <Upload multiple maxCount={6} customRequest={uploadImage}>
-      <Button onClick={(evt) => evt.preventDefault()} icon={<UploadOutlined />}>
-        点击上传最多6张
-      </Button>
-    </Upload>
+    <ImgCrop rotationSlider>
+      <Upload
+        multiple
+        maxCount={6}
+        fileList={fileList}
+        onChange={onChange}
+        onPreview={onPreview}
+        customRequest={uploadImage}
+      >
+        <Button onClick={(evt) => evt.preventDefault()} icon={<UploadOutlined />}>
+          点击上传最多6张
+        </Button>
+      </Upload>
+    </ImgCrop>
   );
 };
 

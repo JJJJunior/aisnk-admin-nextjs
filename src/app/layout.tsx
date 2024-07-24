@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Rubik } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import { ClerkProvider } from "@clerk/nextjs";
-import Notification from "./(store)/components/Notification";
-import Footer from "./(store)/components/Footer";
-import Header from "./(store)/components/Header";
-import Topbar from "./(store)/components/Topbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,15 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={rubik.className}>
         <div className="h-screen">
-          <ClerkProvider>
-            <Notification />
-            <Header />
-            <Topbar />
-            <div className="bg-grey-1 h-full">{children}</div>
-            <Footer />
-          </ClerkProvider>
+          <ClerkProvider>{children}</ClerkProvider>
         </div>
       </body>
     </html>

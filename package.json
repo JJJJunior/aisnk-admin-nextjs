@@ -14,9 +14,12 @@
     "@prisma/client": "^5.17.0",
     "@stablelib/base64": "^2.0.0",
     "antd": "^5.19.3",
+    "antd-img-crop": "^4.22.0",
     "axios": "^1.7.2",
     "lucide-react": "^0.414.0",
+    "multer": "^1.4.5-lts.1",
     "next": "14.2.5",
+    "next-connect": "^1.0.0",
     "rc-tween-one": "^3.0.6",
     "react": "^18",
     "react-dom": "^18",
@@ -24,6 +27,7 @@
     "stripe": "^16.2.0"
   },
   "devDependencies": {
+    "@types/multer": "^1.4.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

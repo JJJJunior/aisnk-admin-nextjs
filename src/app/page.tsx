@@ -1,9 +1,8 @@
-import React, {ReactNode} from "react";
-const Home: React.FC = () => {
-  return (
-    <div>
-      Home
-    </div>
-  )
-}
-export default Home
+"use client";
+import { useRouter } from "next/navigation";
+const page = () => {
+  const router = useRouter();
+  return router.push("/store");
+};
+
+export default page;

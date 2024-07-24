@@ -158,7 +158,7 @@ const NewForm: React.FC = () => {
             },
           ]}
         >
-          <UploadImages setImages={setImages} />
+          <UploadImages setImages={setImages} images={images} />
         </Form.Item>
         <div className="flex flex-wrap gap-4">
           {images.length > 0 &&

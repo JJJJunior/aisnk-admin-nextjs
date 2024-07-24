@@ -3,10 +3,10 @@ import { Menu, Search, ShoppingBag, ShoppingBasket, ShoppingCart, User } from "l
 
 const Header = () => {
   return (
-    <div className="p-2 border border-b-gray-200 bg-white">
-      <div className="flex justify-between items-center mx-24">
+    <div className="border border-b-gray-200 bg-white">
+      <div className="flex justify-between items-center mx-14">
         <Menu />
-        <div className="text-3xl font-semibold ml-24">AISNK</div>
+        <div className="text-3xl font-semibold ml-20">AISNK</div>
         <div className="flex gap-4">
           <Search />
           <User />
