@@ -1,7 +1,14 @@
 import React from "react";
+import Topbar from "@/app/(store)/components/Topbar";
+import MainCarousel from "@/app/(store)/components/MainCarousel";
 
 const Streetwear = () => {
-  return <div>Streetwear</div>;
+  return (
+    <>
+      <Topbar />
+      <MainCarousel />
+    </>
+  );
 };
 
 export default Streetwear;

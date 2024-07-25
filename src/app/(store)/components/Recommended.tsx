@@ -1,6 +1,5 @@
 import React from "react";
-import Image from "next/image";
-import { ProductsOnCollections, Product } from "@prisma/client";
+import { ProductsOnCollections } from "@prisma/client";
 
 interface DataList {
   dataList: ProductsOnCollections[];

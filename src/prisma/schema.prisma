@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model UserInStore {
+  clerkId   String   @id @unique
+  wishlist  String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("web_user")
+}
+
 model Session {
   id             String  @id @default(uuid())
   user_id        String?

@@ -12,7 +12,7 @@ import Link from "next/link";
 const EditForm = ({ productData }: { productData: any }) => {
   const [form] = Form.useForm();
   const [collections, setCollections] = useState<CollectionType[]>([]);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 

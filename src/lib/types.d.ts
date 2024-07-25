@@ -58,7 +58,7 @@ export type ProductType = {
   id: string;
   title: string;
   description: string;
-  images: string[];
+  images: string;
   category: string;
   collections: string[];
   status: string;
@@ -68,4 +68,28 @@ export type ProductType = {
   colors: string[];
   price: number;
   expense: number;
+};
+
+export type UserType = {
+  clerkId: string;
+  wishlist: string;
+  orders: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type OrdersType = {
+  id: string;
+  products: OrderItemType[];
+  shippingAddress: [Object];
+  shippingRate: string;
+  totalAmount: number;
+  createdAt: Date;
+};
+
+export type OrderItemType = {
+  product: ProductType;
+  quantity: number;
+  color: string;
+  size: string;
 };
