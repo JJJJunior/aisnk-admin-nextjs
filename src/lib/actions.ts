@@ -57,6 +57,11 @@ export const getOrders = async (customerId: string) => {
   });
 };
 
+export const getCustomers = async () => {
+  const customers = await prisma.customer.findMany();
+  return customers;
+};
+
 export const getRelatedProducts = async (productId: string) => {
   const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${productId}/related`);
   return await res.data;

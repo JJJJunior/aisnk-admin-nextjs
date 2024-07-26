@@ -24,8 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     try {
       const res = await axios.get(`/api/users/${userId}`);
       if (res.status === 200) {
-        console.log(res.data);
-        router.push("/admin/home");
+        // console.log(res.data);
       }
     } catch (err) {
       console.error(err);

@@ -17,21 +17,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ productInfo }) => {
   return (
     <div className="max-w-[400px] flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <p className="text-heading3-bold">{productInfo.title}</p>
+        <p className="text-lg font-semibold text-gray-700">{productInfo.title}</p>
         <HeartFavorite productInfo={productInfo} />
       </div>
       <div className="flex gap-2">
-        <p className="text-base-medium text-grey-2">Category：</p>
+        <p className="font-semibold text-gray-700">Category：</p>
         <p className="text-base-bold">{productInfo.category}</p>
       </div>
-      <p className="text-lg font-semibold">$ {productInfo.price}</p>
+      <p className="font-semibold">$ {productInfo.price}</p>
       <div className="flex flex-col gap-2">
-        <p className="text-base-medium text-grey-2">Description:</p>
-        <p className="text-small-medium">{productInfo.description}</p>
+        <p className="font-semibold text-gray-700">Description:</p>
+        <p className="text-sm text-gray-600">{productInfo.description}</p>
       </div>
       {productInfo.colors?.split(",").length > 0 && (
         <div className="flex flex-col gap-2">
-          <p className="text-base-medium text-grey-2">Colors:</p>
+          <p className="font-semibold text-gray-700">Colors:</p>
           <div className="flex gap-2 flex-wrap">
             {productInfo.colors?.split(",").map((color, index) => (
               <p
@@ -49,7 +49,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ productInfo }) => {
       )}
       {productInfo.sizes?.split(",").length > 0 && (
         <div className="flex flex-col gap-2">
-          <p className="text-base-medium text-grey-2">Sizes:</p>
+          <p className="font-semibold text-gray-700">Sizes:</p>
           <div className="flex gap-2 flex-wrap">
             {productInfo.sizes?.split(",").map((size, index) => (
               <p
@@ -66,14 +66,14 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ productInfo }) => {
         </div>
       )}
       <div className="flex flex-col gap-2">
-        <p className="text-base-medium text-grey-2">Quantity:</p>
+        <p className="font-semibold text-gray-700">Quantity:</p>
         <div className="flex gap-4 items-center">
           <MinusCircle
-            className="hover:text-red-1 cursor-pointer"
+            className="hover:text-gray-400 cursor-pointer"
             onClick={() => quantity > 1 && setQuantity(quantity - 1)}
           />
-          <p className="hover:text-red-1 cursor-pointer">{quantity}</p>
-          <PlusCircle className="hover:text-red-1 cursor-pointer" onClick={() => setQuantity(quantity + 1)} />
+          <p className="hover:text-gray-400 cursor-pointer">{quantity}</p>
+          <PlusCircle className="hover:text-gray-400 cursor-pointer" onClick={() => setQuantity(quantity + 1)} />
         </div>
       </div>
       <button

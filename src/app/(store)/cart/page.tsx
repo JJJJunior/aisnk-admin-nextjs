@@ -2,16 +2,16 @@
 import React from "react";
 import useCart from "@/lib/hooks/useCart";
 import Image from "next/image";
-import {MinusCircle, PlusCircle, Trash} from "lucide-react";
+import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import axios from "axios";
-import {useUser} from "@clerk/nextjs";
-import {useRouter} from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Cart = () => {
   const router = useRouter();
   const cart = useCart();
-  const {user} = useUser();
+  const { user } = useUser();
   const total = cart.cartItems.reduce((acc, cartItem) => acc + cartItem.item.price * cartItem.quantity, 0);
   // 这里可以加上运费以及税率
   const subtotalRounded = parseFloat(total.toFixed(2));
@@ -52,7 +52,7 @@ const Cart = () => {
             Back to Home
           </Link>
         </div>
-        <hr className="my-6"/>
+        <hr className="my-6" />
         {cart.cartItems.length === 0 ? (
           <p className="text-body-bold">No item in cart</p>
         ) : (
@@ -65,8 +65,8 @@ const Cart = () => {
                 <div className="flex items-center">
                   <Image
                     src={cartItem.item.images.split(",")[0]}
-                    width={100}
-                    height={100}
+                    width={200}
+                    height={200}
                     className="rounded w-32 h-32 object-cover"
                     alt="product"
                   />
@@ -88,7 +88,7 @@ const Cart = () => {
                     onClick={() => cart.increaseQuantity(cartItem.item.id)}
                   />
                 </div>
-                <Trash className="hover:text-red-1 cursor-pointer" onClick={() => cart.removeItem(cartItem.item.id)}/>
+                <Trash className="hover:text-red-1 cursor-pointer" onClick={() => cart.removeItem(cartItem.item.id)} />
               </div>
             ))}
           </div>
@@ -104,7 +104,9 @@ const Cart = () => {
         </div>
         <button
           onClick={handlePayment}
-          className={`border rounded text-body-bold py-2 w-full ${!cart?.cartItems.length > 0 ? "bg-gray-200 text-gray-400" : "bg-white hover:bg-black hover:text-white"}`}
+          className={`border rounded text-body-bold py-2 w-full ${
+            !cart?.cartItems.length > 0 ? "bg-gray-200 text-gray-400" : "bg-white hover:bg-black hover:text-white"
+          }`}
           disabled={!cart?.cartItems.length > 0}
         >
           Proceed to Checkout

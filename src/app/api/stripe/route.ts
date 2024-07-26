@@ -1,4 +1,4 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import prisma from "@/prisma";
 
@@ -48,20 +48,21 @@ export const POST = async (req: NextRequest) => {
       // console.log("[lineItems............]", lineItems)
 
       //   订单信息
-      const orderItems = lineItems?.map((item: any) => {
-        return {
-          product: item.price.product.metadata.productId,
-          title: item.description,
-          currency: item.currency,
-          amountDiscount: item.amount_discount,
-          amountSubtotal: item.amount_subtotal,
-          amountTax: item.amount_tax,
-          amountTotal: item.amount_total,
-          color: item.price.product.metadata.color || "N/A",
-          size: item.price.product.metadata.size || "N/A",
-          quantity: item.quantity,
-        };
-      }) || [];
+      const orderItems =
+        lineItems?.map((item: any) => {
+          return {
+            product: item.price.product.metadata.productId,
+            title: item.description,
+            currency: item.currency,
+            amountDiscount: item.amount_discount,
+            amountSubtotal: item.amount_subtotal,
+            amountTax: item.amount_tax,
+            amountTotal: item.amount_total,
+            color: item.price.product.metadata.color || "N/A",
+            size: item.price.product.metadata.size || "N/A",
+            quantity: item.quantity,
+          };
+        }) || [];
 
       // 创建订单
       const newOrder = {
@@ -89,8 +90,8 @@ export const POST = async (req: NextRequest) => {
             create: newOrder.products.map((item) => ({
               product: {
                 connect: {
-                  id: item.product
-                }
+                  id: item.product,
+                },
               },
               title: item.title,
               currency: item.currency,
@@ -123,17 +124,18 @@ export const POST = async (req: NextRequest) => {
               },
               where: {
                 id: customerInfo.clerkId,
-              }
-            }
+              },
+            },
           },
+          status: "Paid",
           totalAmount: newOrder.totalAmount,
         },
       });
       //   发送 email/SMS/push notification
     }
-    return new NextResponse("success", {status: 200});
+    return new NextResponse("success", { status: 200 });
   } catch (err) {
     console.log(err);
-    return new NextResponse("Failed to create the order", {status: 500});
+    return new NextResponse("Failed to create the order", { status: 500 });
   }
 };

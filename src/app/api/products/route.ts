@@ -64,7 +64,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
         },
       },
     });
-    console.log(products);
+    // console.log(products);
     return NextResponse.json(products, { status: 200 });
   } catch (err) {
     console.log(err);
