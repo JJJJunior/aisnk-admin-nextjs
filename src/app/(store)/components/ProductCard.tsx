@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductPros> = ({ id, isNew, price, title, alt, src 
           alt={alt}
           width={480}
           height={520}
-          className="rounded shadow-md w-full transition duration-800 ease-in-out transform hover:brightness-75 hover:contrast-150"
+          className="rounded shadow-md w-full transition duration-800 ease-in-out transform hover:brightness-50 hover:contrast-150"
         />
       </Link>
       <div className="w-full mt-2">
