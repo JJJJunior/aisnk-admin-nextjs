@@ -14,7 +14,7 @@ export default function RootLayout({
       <div className="h-full">
         <Notification />
         <Header />
-        <div className="bg-grey-1 h-full">{children}</div>
+        <div className="bg-grey-1">{children}</div>
         <Footer />
       </div>
     </AntdRegistry>

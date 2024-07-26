@@ -23,7 +23,7 @@ const Topbar = () => {
     },
   ];
   return (
-    <div className="bg-white sticky top-0 z-50 h-12 flex justify-around items-center mx-14">
+    <div className="bg-white sticky top-0 z-10 h-12 flex justify-around items-center mx-14">
       {links.map((link, index) => (
         <div className=" h-full w-full  text-gray-400" key={index}>
           <Link
