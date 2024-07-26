@@ -13,28 +13,28 @@ interface ProductPros {
 }
 const ProductCard: React.FC<ProductPros> = ({ id, isNew, price, title, alt, src }) => {
   return (
-    <Link href={`/sneakers/${id}`}>
-      <div className="bg-white w-55 h-65 overflow-hidden flex flex-col justify-center p-2">
-        <div className="flex justify-between items-center w-full relative">
-          {isNew && (
-            <div className="px-1 border border-gray-400 text-gray-400 text-sm italic absolute top-0 left-0">New</div>
-          )}
-        </div>
+    <div className="p-1 w-40">
+      <div className="flex justify-between items-center relative">
+        {isNew && (
+          <div className="px-1 border border-gray-400 text-gray-600 text-xs italic absolute top-0 z-20 left-0">New</div>
+        )}
+      </div>
+      <Link href={`/sneakers/${id}`}>
         <Image
           src={src}
           alt={alt}
-          width={150}
-          height={170}
-          className="hover:scale-110 transition-transform duration-300 ease-in-out"
+          width={480}
+          height={520}
+          className="rounded shadow-md w-full transition duration-800 ease-in-out transform hover:brightness-75 hover:contrast-150"
         />
-        <div>
-          <div>US: ${price}</div>
-        </div>
-        <div className="w-24 overflow-hidden text-ellipsis whitespace-nowrap">
-          <p className="text-sm text-gray-400">{title}</p>
+      </Link>
+      <div className="w-full mt-2">
+        <div className="text-sm">US: ${price}</div>
+        <div className="overflow-hidden w-full">
+          <p className="text-xs text-gray-500 ellipsis-3">{title}</p>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -2,6 +2,21 @@
 import prisma from "@/prisma";
 import axios from "axios";
 
+export const getProductsOnCollections = async (collectionId: string) => {
+  const productList = await prisma.productsOnCollections.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      collectionId: collectionId,
+    },
+    include: {
+      product: true,
+    },
+  });
+  return productList;
+};
+
 export const getCollections = async () => {
   const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/collections`);
   return await res.data;

@@ -41,11 +41,12 @@ const Header = () => {
   return (
     <div className="border border-b-gray-200 bg-white py-2 relative">
       {showSearch && (
-        <div className="absolute bg-white rounded border w-full border-gray-500 top-0 z-20 flex">
+        <div className="absolute bg-gray-300 rounded border-2 w-full border-gray-500 top-0 z-20 flex">
           <input
             type="text"
             placeholder="Search products..."
-            className="w-full h-32 p-8 text-lg focus:outline-none"
+            className="w-full h-32 p-8 bg-gray-300 text-lg focus:outline-none"
+            onBlurCapture={() => setShowSearch(false)}
             onChange={(evt) => setQuery(evt.target.value)}
           />
           <button onClick={handeSearchContent} disabled={query === ""} className="mr-20">
